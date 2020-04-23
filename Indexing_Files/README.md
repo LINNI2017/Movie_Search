@@ -1,23 +1,4 @@
-# Assignment 9 - Project
-
-### LINNI CAI
-### I took 1 day to finish the assignment.
-### I discussed with WEN XIE.
-### External Resources:
-	- https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
-	- http://man7.org/linux/man-pages/man2/stat.2.html
-	- https://stackoverflow.com/questions/298510/how-to-get-the-current-directory-in-a-c-program
-
-### Question to answer
-```
-Q: Why do we create this mapping between a DocId and a filename, rather than just storing a list of filenames?
-```
-```
-A: It makes easier to search in docs with a mapping between doc_id and file_name. 
-   For example, we want to find the file with Harry Potter recorded, 
-   it is easier to update the concrete doc file and virtual data, 
-   but it is more difficult to change it through a list of filenames.
-```
+# Indexing Files to Query
 
 ### Clint.py style check
 ```
