@@ -1,8 +1,4 @@
-# Shell
-
-```
-Build a mini-shell
-```
+# Mini Shell
 
 ### My Command
 - pwd 
