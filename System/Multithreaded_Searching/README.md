@@ -1,7 +1,8 @@
 # Multithreaded Searching
 
 ```
-Create a program that will use multiple threads to search for a target value in an array of ints, which are read in from a file. 
+Create a program that will use multiple threads to search for a target value 
+in an array of ints, which are read in from a file. 
 ```
 
 
