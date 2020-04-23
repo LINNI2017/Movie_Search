@@ -2,7 +2,7 @@
 
 ### Indexing Files
 - Build a hashtable
-- Use the hashtable to index the files
+- Traverse the file directory and use the hashtable to index the files
 
 ### Indexing Files to Query
 - Build a doc-id-map
@@ -14,4 +14,5 @@
 - Test base on large-scale data
 
 ### Client-Server
-- Build the client, server, multi-server
+- Build the client and the server
+- Build multi-server to handle multiple connections from different clients
