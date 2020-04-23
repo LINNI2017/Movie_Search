@@ -1,12 +1,4 @@
-# Assignment 11
-
-### LINNI CAI
-### I took 2 day to finish the assignment.
-### I discussed with WEN XIE.
-### External Resources:
-	- https://www.geeksforgeeks.org/socket-programming-cc/
-	- https://www.cs.rpi.edu/~moorthy/Courses/os98/Pgms/socket.html
-	- https://github.ccs.neu.edu/cs5007seaSpr2020/resources/blob/master/l12_network/
+# Client Server Movie Search Engine
 
 ### Clint.py style check
 ```

@@ -1,10 +1,4 @@
-# Assignment 11 
-
-### LINNI CAI
-### I took 1 day to finish the assignment.
-### I done by my own.
-### External Resources:
-	- my a11-project
+# Client Server Guessing Game
 
 ### Clint.py style check
 ```
