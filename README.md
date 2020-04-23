@@ -1,7 +1,7 @@
 # Movie Search
 
 ### Indexing Files
-- Build a hashtable
+- Parse out arguments and build an appropriate hashtable
 - Traverse the file directory and use the hashtable to index the files
 
 ### Indexing Files to Query
