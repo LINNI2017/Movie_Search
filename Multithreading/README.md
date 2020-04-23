@@ -1,6 +1,4 @@
-#  Multithreading
-
-### BUILD A MULTITHREADED INDEXER
+# Multi-Threading
 
 ### Large Data Test
 
