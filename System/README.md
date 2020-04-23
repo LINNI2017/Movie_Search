@@ -1,4 +1,4 @@
-# System practice
+# System Practice
 
 ### Client Server Guessing Game
 - Create the client and the server
