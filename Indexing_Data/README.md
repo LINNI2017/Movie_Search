@@ -1,4 +1,4 @@
-# Building a Data Indexer
+# Data Indexer
 
 ## Files: 
 * ```FileParser```: Responsible for reading in a file, checking for errors, and parse out movies.
