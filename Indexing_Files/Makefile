@@ -2,62 +2,103 @@
 AR = ar
 ARFLAGS = rcs
 CC = gcc
+CXX = g++
 
-GOOGLE_TEST_INCLUDE=${HOME}/src/googletest-release-1.8.0/googletest/include/
-
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-BLUE='\033[1;34m'
-YELLOW='\033[1;33m'
-ORANGE='\033[0;33m'
-NC='\033[0m' # No Color
+# gtest
+GTEST_DIR = ${HOME}/src/googletest-release-1.8.0/googletest
+GOOGLE_TEST_LIB = ${HOME}/lib/gtest/libgtest.a
+GOOGLE_TEST_INCLUDE = ${HOME}/src/googletest-release-1.8.0/googletest/include/
+GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
+                $(GTEST_DIR)/include/gtest/internal/*.h
 
 # define useful flags to cc/ld/etc.
-CFLAGS = -g -Wall -I. -Iheaders -Ia8 -L. -lHtll -lA8
-LDFLAGS = -L.
+CFLAGS = -g -Wall -I. -I.. -Ihtll -I${GOOGLE_TEST_INCLUDE} 
+LDFLAGS = -L. -L${GOOGLE_TEST_INCLUDE}
+CPPUNITFLAGS = -L${GOOGLE_TEST_INCLUDE} -lgtest
 
 #define common dependencies
-OBJS = DocIdMap.o DirectoryParser.o FileCrawler.o \
-	QueryProcessor.o \
-	DocSet.o MovieTitleIndex.o
-HEADERS = DirectoryParser.h FileCrawler.h DocIdMap.h\
-	DocSet.h \
-	MovieTitleIndex.h
+OBJS = FileParser.o Movie.o MovieSet.o MovieIndex.o MovieReport.o 
+HEADERS = FileParser.h Movie.h MovieSet.h MovieIndex.h MovieReport.h 
+TESTOBJS = test_fileparser.o test_movieindex.o
 
 # compile everything
-all: main test 
+all: test-fileparser test-movieindex example FORCE
 
-main: main.c $(OBJS)
-	$(CC) -o main main.c $(OBJS) $(CFLAGS)
-	@echo -e ${YELLOW}
+gtest-src :  | release-1.8.0.tar.gz
 	@echo ===========================
-	@echo Run main by running ./main dir/
-	@echo \(where dir is the directory to look for files to index\)
-	@echo Example:
-	@echo ./main data_tiny/
-	@echo -e ${BLUE}$
-	@echo \(DON\'T FORGET THE TRAILING SLASH\)
-	@echo -e ${YELLOW}
+	@echo Extracting gtest source 
 	@echo ===========================
-	@echo -e ${NC}
+	mkdir -p ${HOME}/src
+	cp release-1.8.0.tar.gz ${HOME}/src/
+	tar -xzf ${HOME}/src/release-1.8.0.tar.gz -C ${HOME}/src/
+
+gtest-all.o : |gtest-src
+	@echo ===========================
+	@echo Building gtest-all.o
+	@echo ===========================
+	@echo GTEST_DIR: ${GTEST_DIR}
+	g++ -isystem ${GTEST_DIR}/include -I${GTEST_DIR} -pthread -c ${GTEST_DIR}/src/gtest-all.cc
+
+gtest_main.o : $(GTEST_SRCS_)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+            $(GTEST_DIR)/src/gtest_main.cc
+
+$(GOOGLE_TEST_LIB) : gtest-all.o
+	@echo ===========================
+	@echo Building the GTest library
+	@echo ===========================
+	ar -rv libgtest.a gtest-all.o
+	mkdir -p ~/lib/gtest/
+	mv libgtest.a ~/lib/gtest/
+
+test_suite: $(TESTOBJS) $(TESTHEADERS)  FORCE
+	$(CXX) $(CFLAGS) -o test_suite $(TESTOBJS) \
+	$(CPPUNITFLAGS) $(LDFLAGS) -lpthread $(LDFLAGS)
+
+%.o: %.cc $(HEADERS) FORCE
+	$(CXX) $(CFLAGS) -c $<
 
 %.o: %.c $(HEADERS) FORCE
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -g -c  $<
 
-test: test_suite.o $(OBJS)
-	g++ -g -o test_suite test_suite_a9.o $(OBJS)\
-		 -L${HOME}/lib/gtest -lgtest -lpthread $(CFLAGS)
-	@echo -e ${YELLOW}
+example: $(OBJS) example_indexer.o
 	@echo ===========================
-	@echo Run tests by running ./test_suite
+	@echo Building example program
 	@echo ===========================
-	@echo -e ${NC}
+	gcc -g $(OBJS) example_indexer.o htll/LinkedList.o htll/Hashtable.o Assert007.o \
+		-o example
+	@echo ===========================
+	@echo Run example by running ./example
+	@echo ===========================
 
-test_suite.o: test_suite_a9.cc
-	g++ -g -c -Wall -I $(GOOGLE_TEST_INCLUDE) test_suite_a9.cc \
-		-o test_suite_a9.o $(CFLAGS)
+test-fileparser:  $(GOOGLE_TEST_LIB) test_fileparser.o $(OBJS) Assert007.o
+	@echo ===========================
+	@echo Building fileparser test
+	@echo ===========================
+	g++ -o test_fileparser test_fileparser.o $(OBJS) htll/LinkedList.o htll/Hashtable.o Assert007.o  \
+		 -L${HOME}/lib/gtest -lgtest -lpthread
+	@echo ===========================
+	@echo Run tests by running ./test_fileparser
+	@echo ===========================
+
+
+
+test-movieindex:  $(GOOGLE_TEST_LIB) test_movieindex.o $(OBJS) Assert007.o
+	@echo ===========================
+	@echo Building movie index test
+	@echo ===========================
+	g++ -o test_movieindex test_movieindex.o $(OBJS) htll/LinkedList.o htll/Hashtable.o Assert007.o  \
+		 -L${HOME}/lib/gtest -lgtest -lpthread
+	@echo ===========================
+	@echo Run tests by running ./test_movieindex
+	@echo ===========================
+
+
+test_fileparser.o: test_fileparser.cc
+	g++ -c -Wall -I $(GOOGLE_TEST_INCLUDE) -Ihtll test_fileparser.cc \
+		-o test_fileparser.o 
 
 clean: FORCE
-	/bin/rm -f *.o *~ main test_suite
+	/bin/rm -f *.o *~ test_movieindex test_fileparser  example
 
 FORCE:
